@@ -2,6 +2,28 @@
 -- Funciones de utilidad (NO dependen de plugins)
 local M = {}
 
+-- Función auxiliar para buscar el ejecutable de python subiendo por el árbol de directorios
+local function find_python_binary()
+	-- Obtenemos el directorio del archivo actual
+	local current_dir = vim.fn.expand("%:p:h")
+
+	while current_dir and current_dir ~= "" and current_dir ~= "/" do
+		local venv_python = current_dir .. "/.venv/bin/python"
+		if vim.fn.executable(venv_python) == 1 then
+			return venv_python
+		end
+		-- Subir un nivel en el árbol de directorios
+		local parent = vim.fn.fnamemodify(current_dir, ":h")
+		if parent == current_dir then
+			break
+		end
+		current_dir = parent
+	end
+
+	-- Si no se encuentra ningún .venv en la jerarquía, usa el python del sistema
+	return "python3"
+end
+
 -- funcion que ejecuta el codigo actual en una ventana dedicada
 M.run_code = function()
 	vim.cmd("silent! write")
@@ -13,8 +35,7 @@ M.run_code = function()
 
 	-- Lógica de detección
 	if filetype == "python" then
-		local venv_python = vim.fn.getcwd() .. "/.venv/bin/python"
-		local python_exe = vim.fn.executable(venv_python) == 1 and venv_python or "python3"
+		local python_exe = find_python_binary()
 		cmd = string.format("%s '%s'", python_exe, filename)
 	elseif filetype == "c" then
 		-- Compila y ejecuta: genera un binario temporal y lo corre
