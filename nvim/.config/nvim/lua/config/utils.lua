@@ -156,9 +156,9 @@ function M.new_zettel_note()
 id: %s
 title: %s
 tags: []
-fecha: %s
-modificado: %s
-tipo: permanente
+created: %s
+updated: %s
+type: permanente
 ---
 
 # %s
@@ -215,8 +215,9 @@ function M.new_inbox_note()
 		"id: " .. id_timestamp,
 		"aliases: []",
 		"tags: [inbox]",
-		"fecha: " .. os.date("%Y-%m-%d"),
-		"modificado: " .. os.date("%Y-%m-%d %H:%M"), -- Inicialmente igual
+		"created: " .. os.date("%Y-%m-%d"),
+		"updated: " .. os.date("%Y-%m-%d %H:%M"), -- Inicialmente igual
+		"type: inbox",
 		"---",
 		"# " .. titulo,
 		"",
@@ -267,8 +268,8 @@ function M.update_markdown_modified_date()
 			end
 		elseif inside_frontmatter then
 			-- Si el campo ya existe, lo actualizamos
-			if line:match("^modificado%s*:") then
-				lines[i] = "modificado: " .. current_date
+			if line:match("^updated%s*:") then
+				lines[i] = "updated: " .. current_date
 				updated = true
 				break
 			end
@@ -278,7 +279,7 @@ function M.update_markdown_modified_date()
 	-- Si salimos del bucle y no se actualizó, pero encontramos el cierre del frontmatter (nota vieja)
 	if not updated and closing_yaml_line then
 		-- Insertamos el campo justo antes de la línea de cierre '---'
-		table.insert(lines, closing_yaml_line, "modificado: " .. current_date)
+		table.insert(lines, closing_yaml_line, "updated: " .. current_date)
 		updated = true
 	end
 
