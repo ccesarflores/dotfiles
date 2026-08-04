@@ -42,6 +42,49 @@ vim.api.nvim_create_autocmd("FileType", {
 			if file:match("%.pdf$") or file:match("%.png$") then
 				vim.fn.jobstart({ "zathura", ruta_absoluta }, { detach = true })
 				return
+
+			-- Imágenes con imv (todos los formatos soportados)
+			elseif
+				file:match("%.jpg$")
+				or file:match("%.jpeg$")
+				or file:match("%.gif$")
+				or file:match("%.svg$")
+				or file:match("%.tiff$")
+				or file:match("%.tif$")
+				or file:match("%.webp$")
+				or file:match("%.bmp$")
+				or file:match("%.heic$")
+				or file:match("%.heif$")
+				or file:match("%.avif$")
+			then
+				vim.fn.jobstart({ "imv", ruta_absoluta }, { detach = true })
+				return
+
+			-- Videos y audio con mpv
+			elseif
+				file:match("%.mp4$")
+				or file:match("%.mkv$")
+				or file:match("%.webm$")
+				or file:match("%.avi$")
+				or file:match("%.mov$")
+				or file:match("%.mpg$")
+				or file:match("%.mpeg$")
+				or file:match("%.flv$")
+				or file:match("%.wmv$")
+				or file:match("%.3gp$")
+				-- Formatos de audio
+				or file:match("%.mp3$")
+				or file:match("%.flac$")
+				or file:match("%.aac$")
+				or file:match("%.ogg$")
+				or file:match("%.opus$")
+				or file:match("%.wav$")
+				or file:match("%.m4a$")
+			then
+				vim.fn.jobstart({ "mpv", ruta_absoluta }, { detach = true })
+				return
+
+			-- URLs de YouTube
 			elseif file:match("^http") or file:match("^https") then
 				if file:match("youtube%.com") or file:match("youtu%.be") then
 					vim.fn.jobstart({ "mpv", file }, { detach = true })
@@ -49,15 +92,19 @@ vim.api.nvim_create_autocmd("FileType", {
 				end
 				vim.fn.jobstart({ "qutebrowser", file }, { detach = true })
 				return
-			elseif file:match("%.jpg$") or file:match("%.jpeg$") then
-				vim.fn.jobstart({ "imv", ruta_absoluta }, { detach = true })
-				return
-			elseif file:match("%.mp4$") then
-				vim.fn.jobstart({ "mpv", ruta_absoluta }, { detach = true })
-				return
 
-			-- NUEVO/CORREGIDO: Intercepta ODT y DOCX usando la ruta absoluta antes de que caiga en 'gf'
-			elseif file:match("%.odt$") or file:match("%.docx$") or file:match("%.ODT$") or file:match("%.DOCX$") then
+			-- Documentos de oficina
+			-- Intercepta ODT y DOCX y los demas usando la ruta absoluta antes de que caiga en 'gf'
+			elseif
+				file:match("%.odt$")
+				or file:match("%.docx$")
+				or file:match("%.ODT$")
+				or file:match("%.DOCX$")
+				or file:match("%.xls$")
+				or file:match("%.xlsx$")
+				or file:match("%.ppt$")
+				or file:match("%.pptx$")
+			then
 				-- Ejecuta xdg-open con la ruta absoluta real del sistema
 				vim.fn.jobstart({ "xdg-open", ruta_absoluta }, { detach = true })
 				return
