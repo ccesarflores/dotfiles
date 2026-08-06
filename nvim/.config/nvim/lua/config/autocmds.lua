@@ -27,26 +27,157 @@ autocmd("BufWritePre", {
 
 -- Autocomando para manejar enlaces inteligentes en Markdown con <Enter> sobre la ruta
 -- Importante: si el link es de la forma [ver link](/ruta/al/link.pdf), entonces posicionarse sobre la ruta y luego dar enter
+-- vim.api.nvim_create_autocmd("FileType", {
+-- 	pattern = "markdown",
+-- 	callback = function()
+-- 		vim.keymap.set("n", "<CR>", function()
+-- 			-- ... (captura del archivo bajo el cursor)
+-- 			local file = vim.fn.expand("<cfile>")
+--
+-- 			-- Convertimos la ruta relativa (ej: ../02_Projects/archivo.tex)
+-- 			-- en una ruta absoluta real dentro de tu sistema de archivos (:p)
+-- 			local ruta_absoluta = vim.fn.fnamemodify(file, ":p")
+--
+-- 			-- 1. Si son archivos que abrimos con aplicaciones externas
+-- 			if file:match("%.pdf$") or file:match("%.png$") then
+-- 				vim.fn.jobstart({ "zathura", ruta_absoluta }, { detach = true })
+-- 				return
+--
+-- 			-- Imágenes con imv (todos los formatos soportados)
+-- 			elseif
+-- 				file:match("%.jpg$")
+-- 				or file:match("%.jpeg$")
+-- 				or file:match("%.gif$")
+-- 				or file:match("%.svg$")
+-- 				or file:match("%.tiff$")
+-- 				or file:match("%.tif$")
+-- 				or file:match("%.webp$")
+-- 				or file:match("%.bmp$")
+-- 				or file:match("%.heic$")
+-- 				or file:match("%.heif$")
+-- 				or file:match("%.avif$")
+-- 			then
+-- 				vim.fn.jobstart({ "imv", ruta_absoluta }, { detach = true })
+-- 				return
+--
+-- 			-- Videos y audio con mpv
+-- 			elseif
+-- 				file:match("%.mp4$")
+-- 				or file:match("%.mkv$")
+-- 				or file:match("%.webm$")
+-- 				or file:match("%.avi$")
+-- 				or file:match("%.mov$")
+-- 				or file:match("%.mpg$")
+-- 				or file:match("%.mpeg$")
+-- 				or file:match("%.flv$")
+-- 				or file:match("%.wmv$")
+-- 				or file:match("%.3gp$")
+-- 				-- Formatos de audio
+-- 				or file:match("%.mp3$")
+-- 				or file:match("%.flac$")
+-- 				or file:match("%.aac$")
+-- 				or file:match("%.ogg$")
+-- 				or file:match("%.opus$")
+-- 				or file:match("%.wav$")
+-- 				or file:match("%.m4a$")
+-- 			then
+-- 				vim.fn.jobstart({ "mpv", ruta_absoluta }, { detach = true })
+-- 				return
+--
+-- 			-- URLs de YouTube
+-- 			elseif file:match("^http") or file:match("^https") then
+-- 				if file:match("youtube%.com") or file:match("youtu%.be") then
+-- 					vim.fn.jobstart({ "mpv", file }, { detach = true })
+-- 					-- Fuerza a mpv a buscar la mejor calidad que sea igual o menor a 720p a menor costo hardware
+-- 					-- vim.fn.jobstart(
+-- 					-- 	{ "mpv", "--ytdl-format=bestvideo[height<=720]+bestaudio/best[height<=720]", file },
+-- 					-- 	{ detach = true }
+-- 					-- )
+-- 					return
+-- 				end
+-- 				vim.fn.jobstart({ "qutebrowser", file }, { detach = true })
+-- 				return
+--
+-- 			-- Documentos de oficina
+-- 			-- Intercepta ODT y DOCX y los demas usando la ruta absoluta antes de que caiga en 'gf'
+-- 			elseif
+-- 				file:match("%.odt$")
+-- 				or file:match("%.docx$")
+-- 				or file:match("%.ODT$")
+-- 				or file:match("%.DOCX$")
+-- 				or file:match("%.xls$")
+-- 				or file:match("%.xlsx$")
+-- 				or file:match("%.ppt$")
+-- 				or file:match("%.pptx$")
+-- 			then
+-- 				-- Ejecuta xdg-open con la ruta absoluta real del sistema
+-- 				vim.fn.jobstart({ "xdg-open", ruta_absoluta }, { detach = true })
+-- 				return
+-- 			end
+--
+-- 			-- Capturamos la línea actual y la posición del cursor para ver si estamos dentro de un [[Wikilink]]
+-- 			local linea_actual = vim.api.nvim_get_current_line()
+-- 			local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- Base 1 para Lua
+--
+-- 			-- Buscamos si el cursor está parado dentro de algo con [[ ]]
+-- 			-- Una forma simple es ver si el archivo capturado viene de un wikilink o si la línea contiene corchetes
+-- 			if file:match("^%[%[") or linea_actual:match("%[%[.-%]%]") then
+-- 				-- Ejecutamos la acción nativa de ir a definición del LSP (lo mismo que hace gd)
+-- 				local clientes_lsp = vim.lsp.get_clients({ bufnr = 0 })
+-- 				if #clientes_lsp > 0 then
+-- 					vim.lsp.buf.definition()
+-- 					return
+-- 				end
+-- 			end
+-- 			local status, _ = pcall(vim.cmd, "normal! gf")
+-- 			if not status then
+-- 				-- Si 'gf' da error porque no es una ruta, hacemos un Enter común (bajar de línea)
+-- 				return vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, true, true), "n", false)
+-- 			end
+-- 		end, { buffer = true, silent = true, desc = "Abrir enlace inteligente" })
+-- 	end,
+-- })
+
+-- Autocomando para manejar enlaces inteligentes en Markdown con <Enter> sobre la ruta
 vim.api.nvim_create_autocmd("FileType", {
 	pattern = "markdown",
 	callback = function()
 		vim.keymap.set("n", "<CR>", function()
-			-- ... (captura del archivo bajo el cursor)
+			-- Captura del archivo bajo el cursor
 			local file = vim.fn.expand("<cfile>")
 
-			-- Convertimos la ruta relativa (ej: ../02_Projects/archivo.tex)
-			-- en una ruta absoluta real dentro de tu sistema de archivos (:p)
-			local ruta_absoluta = vim.fn.fnamemodify(file, ":p")
+			-- --- RESOLUCIÓN INTELIGENTE DE RUTAS ---
+			local ruta_final = ""
+
+			if file:sub(1, 1) == "~" then
+				-- Si empieza con ~, expandimos el HOME del sistema (~/uncuyo/... -> /home/usuario/uncuyo/...)
+				ruta_final = vim.fn.expand(file)
+			elseif file:sub(1, 1) == "/" then
+				-- Si empieza con /, comprobamos si existe en la raíz del sistema operativo.
+				-- Si NO existe en el sistema raíz (ej: /uncuyo/...), asumimos que es relativa a la raíz del Vault.
+				if vim.uv.fs_stat(file) then
+					ruta_final = file
+				else
+					-- Le sacamos la barra inicial para convertirla en ruta relativa al Vault activo
+					local ruta_relativa_vault = file:sub(2)
+					ruta_final = vim.fn.fnamemodify(ruta_relativa_vault, ":p")
+				end
+			else
+				-- Rutas relativas normales (03_Attachments/..., ../...)
+				ruta_final = vim.fn.fnamemodify(file, ":p")
+			end
+			-- ----------------------------------------
 
 			-- 1. Si son archivos que abrimos con aplicaciones externas
-			if file:match("%.pdf$") or file:match("%.png$") then
-				vim.fn.jobstart({ "zathura", ruta_absoluta }, { detach = true })
+			if file:match("%.pdf$") then
+				vim.fn.jobstart({ "zathura", ruta_final }, { detach = true })
 				return
 
 			-- Imágenes con imv (todos los formatos soportados)
 			elseif
 				file:match("%.jpg$")
 				or file:match("%.jpeg$")
+				or file:match("%.png$")
 				or file:match("%.gif$")
 				or file:match("%.svg$")
 				or file:match("%.tiff$")
@@ -57,7 +188,7 @@ vim.api.nvim_create_autocmd("FileType", {
 				or file:match("%.heif$")
 				or file:match("%.avif$")
 			then
-				vim.fn.jobstart({ "imv", ruta_absoluta }, { detach = true })
+				vim.fn.jobstart({ "imv", ruta_final }, { detach = true })
 				return
 
 			-- Videos y audio con mpv
@@ -81,7 +212,7 @@ vim.api.nvim_create_autocmd("FileType", {
 				or file:match("%.wav$")
 				or file:match("%.m4a$")
 			then
-				vim.fn.jobstart({ "mpv", ruta_absoluta }, { detach = true })
+				vim.fn.jobstart({ "mpv", ruta_final }, { detach = true })
 				return
 
 			-- URLs de YouTube
@@ -94,7 +225,6 @@ vim.api.nvim_create_autocmd("FileType", {
 				return
 
 			-- Documentos de oficina
-			-- Intercepta ODT y DOCX y los demas usando la ruta absoluta antes de que caiga en 'gf'
 			elseif
 				file:match("%.odt$")
 				or file:match("%.docx$")
@@ -105,19 +235,14 @@ vim.api.nvim_create_autocmd("FileType", {
 				or file:match("%.ppt$")
 				or file:match("%.pptx$")
 			then
-				-- Ejecuta xdg-open con la ruta absoluta real del sistema
-				vim.fn.jobstart({ "xdg-open", ruta_absoluta }, { detach = true })
+				vim.fn.jobstart({ "xdg-open", ruta_final }, { detach = true })
 				return
 			end
 
 			-- Capturamos la línea actual y la posición del cursor para ver si estamos dentro de un [[Wikilink]]
 			local linea_actual = vim.api.nvim_get_current_line()
-			local col = vim.api.nvim_win_get_cursor(0)[2] + 1 -- Base 1 para Lua
 
-			-- Buscamos si el cursor está parado dentro de algo con [[ ]]
-			-- Una forma simple es ver si el archivo capturado viene de un wikilink o si la línea contiene corchetes
 			if file:match("^%[%[") or linea_actual:match("%[%[.-%]%]") then
-				-- Ejecutamos la acción nativa de ir a definición del LSP (lo mismo que hace gd)
 				local clientes_lsp = vim.lsp.get_clients({ bufnr = 0 })
 				if #clientes_lsp > 0 then
 					vim.lsp.buf.definition()
@@ -126,7 +251,6 @@ vim.api.nvim_create_autocmd("FileType", {
 			end
 			local status, _ = pcall(vim.cmd, "normal! gf")
 			if not status then
-				-- Si 'gf' da error porque no es una ruta, hacemos un Enter común (bajar de línea)
 				return vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<CR>", true, true, true), "n", false)
 			end
 		end, { buffer = true, silent = true, desc = "Abrir enlace inteligente" })
