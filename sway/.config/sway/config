@@ -272,6 +272,13 @@ bindsym $mod+m mode "mouse"
 # Opción recomendada (con wofi)
 bindsym $mod+Control+m exec bash -c 'tag=$(echo "" | wmenu -p "Etiqueta:" | tr "[:upper:]" "[:lower:]" | tr " " "-"); filename=$(date +%Y-%m-%d_%H-%M-%S)${tag:+_${tag}}.png; grim -g "$(slurp)" "/home/cesarf/uncuyo/1_Recursos/images/$filename"'
 
+    # Atajos para controlar MPD (Music Player Daemon) a traves de mpc (Modificado con --locked)
+    # bindsym --locked XF86AudioPlay exec mpc toggle
+    # bindsym --locked XF86AudioNext exec mpc next
+    # bindsym --locked XF86AudioPrev exec mpc prev
+    # bindsym --locked XF86AudioStop exec mpc stop
+
+
 #
 # Status Bar:
 #
@@ -282,8 +289,10 @@ bar {
     # When the status_command prints a new line to stdout, swaybar updates.
     # The default just shows the current date and time.
     #status_command while date +'%Y-%m-%d %X'; do sleep 1; done
-    #status_command i3status
-    status_command i3status -c ~/.config/i3status
+# Usa `status_command i3status` si el archivo de configuracion de i3status esta en el archivo `config`:  `~/.config/i3status/config`
+    status_command i3status
+# Usa la siguiente linea si tu archivo de configuracion se llama `i3status` en lugar de `config` y esta directamente en la carpeta `~/.config/`.
+    # status_command i3status -c ~/.config/i3status
 
     colors {
         statusline #ffffff
@@ -309,7 +318,16 @@ for_window [app_id="calc-scratchpad"] {
 # 2. El "Atajo Inteligente"
 # Si la ventana existe, la muestra/oculta. Si no, la crea.
 bindsym $mod+c exec swaymsg '[app_id="calc-scratchpad"] scratchpad show' || foot -a calc-scratchpad qalc
+
 #------------------------------------------
+
+for_window [app_id="translate"] {
+    floating enable
+    resuze set 500 500
+    move position center
+}
+
+bindsym $mod+t exec swaymsg '[app_id]"translate"] scratchpad show' || foot -a translate
 
 # Mantenimiento automático al iniciar
 exec ~/.local/bin/mantenimiento.sh
