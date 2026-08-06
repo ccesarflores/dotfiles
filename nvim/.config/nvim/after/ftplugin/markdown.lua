@@ -103,6 +103,10 @@ end, {
 	desc = "Abrir enlace inteligente",
 })
 
+-- Keymaps específicas
+vim.keymap.set("n", "<leader>mp", "<cmd>MarkdownPreview<cr>", { buffer = true, desc = "Preview Start" })
+vim.keymap.set("n", "<leader>ms", "<cmd>MarkdownPreviewStop<cr>", { buffer = true, desc = "Preview Stop" })
+
 -- Otras configuraciones específicas de Markdown
 -- 1. Configuración básica de texto y corrector bilingüe por defecto
 -- Traemos nuestra función utilitaria
