@@ -45,23 +45,6 @@ vim.keymap.set("n", "gx", utils.open_link, { desc = "Abrir link (Directorios en 
 -- Abrir el índice general del Vault al toque con <leader>vi (Vault Index)
 vim.keymap.set("n", "<leader>gx", ":edit ~/uncuyo/1_Recursos/LaTeX/latex-resume.md<CR>", { desc = "Open LaTeX resume" })
 
--- -- Interceptar la apertura de enlaces a directorios locales
--- vim.keymap.set("n", "gx", function()
--- 	-- Obtener la palabra/enlace bajo el cursor de forma segura
--- 	local file = vim.fn.expand("<cfile>")
---
--- 	-- Verificar si es un directorio local válido
--- 	if vim.fn.isdirectory(file) == 1 then
--- 		-- Abrir el directorio usando la API de Oil
--- 		require("oil").open(file)
--- 	else
--- 		-- Si no es un directorio (es un link web o un archivo),
--- 		-- mantener el comportamiento nativo de Neovim/gx
--- 		vim.cmd("normal! gx")
--- 	end
--- end, { desc = "Abrir link (Directorios en Oil)" })
---
-
 -- Traducir en split vertical
 vim.keymap.set("n", "<leader>qs", utils.traducir, { desc = "Traducir palabra (split)" })
 vim.keymap.set("v", "<leader>qs", utils.traducir, { desc = "Traducir selección (split)" })
