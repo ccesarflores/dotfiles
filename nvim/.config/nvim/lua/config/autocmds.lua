@@ -169,9 +169,26 @@ vim.api.nvim_create_autocmd("FileType", {
 			-- ----------------------------------------
 
 			-- 1. Si son archivos que abrimos con aplicaciones externas
-			if file:match("%.pdf$") then
-				vim.fn.jobstart({ "zathura", ruta_final }, { detach = true })
-				return
+			if file:match("%.pdf") then
+				-- Extrae la ruta limpia y el número de página si existe (soporta #page=X, #12 o :12)
+				local pdf_path, pagina = file:match("^(.-)%.pdf[:#]?%a*=?%s*(%d*)$")
+
+				if pdf_path then
+					-- Reconstruimos la ruta terminada en .pdf
+					ruta_final = vim.fn.fnamemodify(pdf_path .. ".pdf", ":p")
+
+					local cmd = { "zathura" }
+
+					-- Si detectó un número de página, le pasamos la bandera -P
+					if pagina and pagina ~= "" then
+						table.insert(cmd, "-P")
+						table.insert(cmd, pagina)
+					end
+
+					table.insert(cmd, ruta_final)
+					vim.fn.jobstart(cmd, { detach = true })
+					return
+				end
 
 			-- Imágenes con imv (todos los formatos soportados)
 			elseif
