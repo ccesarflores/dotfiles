@@ -271,7 +271,7 @@ bindsym $mod+m mode "mouse"
     # Capturar área seleccionada (Mod+Ctrl+n) y guarda en images
     bindsym $mod+Control+n exec grim -g "$(slurp)" /home/$USER/uncuyo/1_Recursos/images/$(date +%Y-%m-%d_%H-%m-%s).png
 
-# Opción recomendada (con wofi)
+# Opción recomendada (con wofi) permite elegir nombre
 bindsym $mod+Control+m exec bash -c 'tag=$(echo "" | wmenu -p "Etiqueta:" | tr "[:upper:]" "[:lower:]" | tr " " "-"); filename=$(date +%Y-%m-%d_%H-%M-%S)${tag:+_${tag}}.png; grim -g "$(slurp)" "/home/$USER/uncuyo/1_Recursos/images/$filename"'
 
     # Comando para seleccionar y copiar texto (por ejemplo desde un pdf en el que no se pueda seleccionar texto)
@@ -283,6 +283,8 @@ bindsym $mod+Control+m exec bash -c 'tag=$(echo "" | wmenu -p "Etiqueta:" | tr "
     bindsym --locked XF86AudioPrev exec mpc prev
     bindsym --locked XF86AudioStop exec mpc stop
 
+    # Traductor interactivo (Wofi + Foot)
+    bindsym $mod+Shift+t exec translate-prompt
 
 #
 # Status Bar:

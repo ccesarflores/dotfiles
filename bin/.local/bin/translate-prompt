@@ -1,0 +1,24 @@
+#!/usr/bin/env bash
+# ~/.local/bin/zathura-translate-manual
+
+# Pedir texto directamente con wofi
+TEXT="$(wofi --dmenu --prompt "Traducir palabra/frase:" --lines 0 --width 450)"
+
+[[ -z "$TEXT" ]] && exit 0
+
+CLEAN_TEXT="$(echo "$TEXT" | tr '\n' ' ' | sed 's/  */ /g; s/^ *//; s/ *$//')"
+export TRANSLATE_QUERY="$CLEAN_TEXT"
+
+foot -a translate -T "Traducción Manual" bash -c '
+    printf "\033[2J\033[3J\033[H"
+    echo -e "\033[1;34m=== Texto Original ===\033[0m"
+    echo "$TRANSLATE_QUERY"
+    echo ""
+    echo -e "\033[1;32m=== Traducción ===\033[0m"
+    enes "$TRANSLATE_QUERY"
+    echo ""
+    echo -e "\033[1;30mPresiona cualquier tecla para cerrar...\033[0m"
+    read -n 1 -s
+'
+
+
