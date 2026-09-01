@@ -326,13 +326,18 @@ bindsym $mod+c exec swaymsg '[app_id="calc-scratchpad"] scratchpad show' || foot
 
 #------------------------------------------
 
+# 1. Reglas de apariencia (Se aplican solas cuando nace la ventana)
 for_window [app_id="translate"] {
     floating enable
     resuze set 500 500
     move position center
 }
 
+# 2. El "Atajo Inteligente"
+# Si la ventana existe, la muestra/oculta. Si no, la crea.
 bindsym $mod+t exec swaymsg '[app_id]"translate"] scratchpad show' || foot -a translate
+
+#------------------------------------------
 
 # Mantenimiento automático al iniciar
 exec ~/.local/bin/mantenimiento.sh
