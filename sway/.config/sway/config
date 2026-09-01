@@ -278,10 +278,10 @@ bindsym $mod+Control+m exec bash -c 'tag=$(echo "" | wmenu -p "Etiqueta:" | tr "
     bindsym $mod+p exec grim -g "$(slurp)" - | tesseract stdin stdout -l spa | wl-copy
 
     # Atajos para controlar MPD (Music Player Daemon) a traves de mpc (Modificado con --locked)
-    # bindsym --locked XF86AudioPlay exec mpc toggle
-    # bindsym --locked XF86AudioNext exec mpc next
-    # bindsym --locked XF86AudioPrev exec mpc prev
-    # bindsym --locked XF86AudioStop exec mpc stop
+    bindsym --locked XF86AudioPlay exec mpc toggle
+    bindsym --locked XF86AudioNext exec mpc next
+    bindsym --locked XF86AudioPrev exec mpc prev
+    bindsym --locked XF86AudioStop exec mpc stop
 
 
 #
