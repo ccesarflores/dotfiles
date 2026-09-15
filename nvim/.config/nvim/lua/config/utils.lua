@@ -203,7 +203,6 @@ type: permanente
 		date,
 		title,
 		os.date("%Y-%m-%d"),
-		os.date("%Y-%m-%d %H:%M"), -- Inicialmente igual a la de creación
 		title
 	)
 
@@ -357,7 +356,7 @@ function M.new_inbox_lecture()
 		vim.api.nvim_buf_set_lines(0, 0, -1, false, fallback_template)
 	end
 end
-------------------
+
 -- Actualiza automáticamente el campo 'updated' en el frontmatter de Markdown
 function M.update_markdown_modified_date()
 	local bufnr = vim.api.nvim_get_current_buf()
@@ -367,8 +366,9 @@ function M.update_markdown_modified_date()
 		return
 	end
 
-	-- Leemos las primeras 20 líneas (suficiente para cualquier frontmatter estándar)
-	local lines = vim.api.nvim_buf_get_lines(bufnr, 0, 20, false)
+	-- Leemos las primeras 20 líneas
+	local original_lines = vim.api.nvim_buf_get_lines(bufnr, 0, 20, false)
+	local lines = vim.deepcopy(original_lines)
 	local inside_frontmatter = false
 	local updated = false
 	local closing_yaml_line = nil
@@ -380,12 +380,10 @@ function M.update_markdown_modified_date()
 			if not inside_frontmatter then
 				inside_frontmatter = true
 			else
-				-- Encontramos el cierre del frontmatter
 				closing_yaml_line = i
 				break
 			end
 		elseif inside_frontmatter then
-			-- Si el campo ya existe, lo actualizamos
 			if line:match("^updated%s*:") then
 				lines[i] = "updated: " .. current_date
 				updated = true
@@ -394,18 +392,20 @@ function M.update_markdown_modified_date()
 		end
 	end
 
-	-- Si salimos del bucle y no se actualizó, pero encontramos el cierre del frontmatter (nota vieja)
+	-- Si no existía 'updated:', lo insertamos justo antes del cierre '---'
 	if not updated and closing_yaml_line then
-		-- Insertamos el campo justo antes de la línea de cierre '---'
 		table.insert(lines, closing_yaml_line, "updated: " .. current_date)
 		updated = true
 	end
 
-	-- Si hubo cambios, actualizamos el buffer manteniendo la posición del cursor
+	-- Aplicamos los cambios
 	if updated then
 		local cursor_pos = vim.api.nvim_win_get_cursor(0)
-		vim.api.nvim_buf_set_lines(bufnr, 0, #lines, false, lines)
-		-- Evitamos que el cursor tire error si por alguna razón la posición quedó fuera de rango
+
+		-- Reemplazamos exactamente el rango de líneas leídas originalmente (#original_lines)
+		-- para evitar 'comerse' líneas del cuerpo del documento.
+		vim.api.nvim_buf_set_lines(bufnr, 0, #original_lines, false, lines)
+
 		pcall(vim.api.nvim_win_set_cursor, 0, cursor_pos)
 	end
 end
