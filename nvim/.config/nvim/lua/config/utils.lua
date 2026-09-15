@@ -176,9 +176,9 @@ function M.new_zettel_note()
 ---
 id: %s
 title: %s
+aliases: []
 tags: []
 created: %s
-updated: %s
 type: permanente
 ---
 
@@ -237,7 +237,6 @@ function M.new_inbox_note()
 		"aliases: []",
 		"tags: [inbox]",
 		"created: " .. os.date("%Y-%m-%d"),
-		"updated: " .. os.date("%Y-%m-%d %H:%M"), -- Inicialmente igual
 		"type: inbox",
 		"---",
 		"# " .. titulo,
@@ -261,7 +260,105 @@ function M.new_inbox_note()
 	vim.api.nvim_win_set_cursor(0, { #template, 0 })
 end
 
--- Actualiza automáticamente el campo 'modificado' en el frontmatter de Markdown
+------------------
+function M.new_inbox_lecture()
+	local titulo = vim.fn.input("Nombre de la clase/nota: ")
+	if titulo == "" then
+		print("\nCreación cancelada.")
+		return
+	end
+
+	local id_timestamp = os.date("%Y%m%d%H%M")
+	local inbox_path = vim.fn.expand("~/uncuyo/0_Inbox/")
+
+	-- Slug con guiones para el nombre de archivo
+	local slug = titulo:gsub("%s+", "-"):lower()
+	local nombre_archivo = string.format("%s-%s.md", id_timestamp, slug)
+	local ruta_completa = inbox_path .. nombre_archivo
+
+	if vim.uv.fs_stat(ruta_completa) then
+		print("\n⚠️ ¡Error! Ya existe una nota con ese nombre en 0_Inbox/")
+		return
+	end
+
+	-- Abre el archivo nuevo de forma segura
+	vim.cmd("edit " .. vim.fn.fnameescape(ruta_completa))
+
+	local ok, luasnip = pcall(require, "luasnip")
+	if ok then
+		local s = luasnip.snippet
+		local t = luasnip.text_node
+		local i = luasnip.insert_node
+		local f = luasnip.function_node
+		local rep = require("luasnip.extras").rep
+
+		local function date_str()
+			return os.date("%Y-%m-%d")
+		end
+
+		-- Construimos el snippet directamente en memoria usando el título ingresado
+		local lecture_snippet = s("lecture", {
+			-- Frontmatter YAML
+			t({ "---", "id: " .. id_timestamp, 'title: "' .. titulo .. '"', 'course: "' }),
+			i(1, "Course Name"),
+			t({ '"', 'aliases: ["Lecture - ' .. titulo .. '"]', "type: lecture", "date: " }),
+			f(date_str),
+			t({ "", "tags:", "  - lecture", "  - cs/" }),
+			i(2, "topic"),
+			t({ "", "status: raw", "---", "", "" }),
+
+			-- Encabezado y Contexto
+			t("# " .. titulo),
+			t({ "", "", "**Course:** [[" }),
+			rep(1),
+			t("]] | **Unit:** [["),
+			i(3, "Unit_MOC"),
+			t({ "]]", "", "" }),
+
+			-- Secciones
+			t({ "## Summary & Key Cues", "" }),
+			t("> [!summary] Key Concepts"),
+			t({ "", "> - " }),
+			i(4, "Main takeaway 1"),
+			t({ "", "", "" }),
+
+			t({ "## Class Notes", "" }),
+			i(5, "Write live lecture notes here."),
+			t({ "", "", "" }),
+
+			t({ "## Questions & To Review", "" }),
+			t("- [ ] "),
+			i(6, "Question to clarify"),
+			t({ "", "", "" }),
+
+			t({ "## Refactored Zettels", "" }),
+			t("- [["),
+			i(7, "Atomic_Note_Created"),
+			t("]]", ""),
+		})
+
+		-- Expande el snippet directamente en la posición actual del cursor
+		luasnip.snip_expand(lecture_snippet)
+	else
+		-- Fallback en texto plano si LuaSnip no está cargado
+		local fallback_template = {
+			"---",
+			"id: " .. id_timestamp,
+			'title: "' .. titulo .. '"',
+			"type: lecture",
+			"date: " .. os.date("%Y-%m-%d"),
+			"tags:",
+			"  - lecture",
+			"status: raw",
+			"---",
+			"",
+			"# " .. titulo,
+		}
+		vim.api.nvim_buf_set_lines(0, 0, -1, false, fallback_template)
+	end
+end
+------------------
+-- Actualiza automáticamente el campo 'updated' en el frontmatter de Markdown
 function M.update_markdown_modified_date()
 	local bufnr = vim.api.nvim_get_current_buf()
 

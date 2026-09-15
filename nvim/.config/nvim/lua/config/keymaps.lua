@@ -33,6 +33,11 @@ vim.keymap.set("n", "<leader>nn", function()
 	utils.new_inbox_note()
 end, { desc = "New Note en 0_Inbox" })
 
+-- Crear una nota de lectura nueva automáticamente en 0_Inbox con Frontmatter (debe estar posicionado en vault)
+vim.keymap.set("n", "<leader>nl", function()
+	utils.new_inbox_lecture()
+end, { desc = "New lecture en 0_Inbox" })
+
 -- Abrir el índice general del Vault al toque con <leader>vi (Vault Index)
 vim.keymap.set("n", "<leader>gi", ":edit ~/uncuyo/README.md<CR>", { desc = "Abrir Inicio del Vault" })
 
