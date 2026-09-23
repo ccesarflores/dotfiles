@@ -211,6 +211,64 @@ type: permanente
 	vim.cmd("normal /## Contenido\rj")
 end
 
+function M.new_zettel_note_2()
+	local title = vim.fn.input("Título de la nota: ")
+	if title == "" then
+		print("\nCreación cancelada.")
+		return
+	end
+
+	local date = os.date("%Y%m%d%H%M")
+	local year = os.date("%Y")
+	local slug = title:gsub("%s+", "-"):lower()
+	local filename = string.format("./1_Recursos/%s-%s.md", date, slug)
+
+	if vim.uv.fs_stat(filename) then
+		print("\n⚠️ ¡Error! Ya existe una nota con ese título")
+		return
+	end
+
+	-- USANDO [=[ ]=] PARA EVITAR PROBLEMAS CON [[ ]]
+	local template = string.format(
+		[=[
+---
+id: %s
+title: %s
+aliases: []
+tags: []
+created: %s
+type: permanente
+---
+
+# %s
+
+## Contexto
+> ¿Qué me llevó a escribir esto?
+
+## Contenido
+> Una idea atómica, clara y concisa
+
+
+## Conexiones
+- [[ ]] ← Notas relacionadas
+
+## Fuentes
+-
+
+## Reflexión
+> ¿Por qué es importante esta idea?
+]=],
+		date,
+		title,
+		os.date("%Y-%m-%d"),
+		title
+	)
+
+	vim.cmd("edit " .. filename)
+	vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(template, "\n"))
+	vim.cmd("normal /## Contenido\rj")
+end
+
 function M.new_inbox_note()
 	local titulo = vim.fn.input("Nombre de la nueva nota: ")
 	if titulo == "" then

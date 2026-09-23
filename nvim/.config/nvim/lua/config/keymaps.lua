@@ -42,7 +42,10 @@ end, { desc = "New lecture en 0_Inbox" })
 vim.keymap.set("n", "<leader>gi", ":edit ~/uncuyo/README.md<CR>", { desc = "Abrir Inicio del Vault" })
 
 -- Nueva nota Zettelkasten (NO usa fzf-lua)
-vim.keymap.set("n", "<leader>zn", utils.new_zettel_note, { desc = "[Z]ettel [N]ueva nota" })
+vim.keymap.set("n", "<leader>zn", utils.new_zettel_note, { desc = "[Z]ettel [N]ew note" })
+
+-- Nueva nota Zettelkasten (NO usa fzf-lua)
+vim.keymap.set("n", "<leader>zm", utils.new_zettel_note_2, { desc = "[Z]ettel [N]ew note 2" })
 
 -- Interceptar la apertura de enlaces a directorios locales
 vim.keymap.set("n", "gx", utils.open_link, { desc = "Abrir link (Directorios en Oil)" })
