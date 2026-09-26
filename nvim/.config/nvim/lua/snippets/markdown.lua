@@ -1,9 +1,11 @@
+-- ~/.config/nvim/lua/snippets/markdown.lua
 local ls = require("luasnip")
 local s = ls.snippet
 local t = ls.text_node
 local i = ls.insert_node
 local f = ls.function_node
 local rep = require("luasnip.extras").rep
+local fmt = require("luasnip.extras.fmt").fmt
 
 -- Función para obtener la fecha/hora como ID
 local function get_id()
@@ -234,4 +236,13 @@ ls.add_snippets("markdown", {
 		i(10, "Atomic_Note_Created_From_Lecture"),
 		t("]]", ""),
 	}),
+
+	-- Snippet para insertar una imagen con ruta absoluta desde la raíz del vault
+	s(
+		"img",
+		fmt("![{name}](~/uncuyo/1_Recursos/images/{file})", {
+			name = i(1, "nombre"),
+			file = i(2, "archivo.png"),
+		})
+	),
 })

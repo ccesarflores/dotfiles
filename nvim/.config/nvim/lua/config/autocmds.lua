@@ -305,3 +305,33 @@ vim.api.nvim_create_autocmd("BufWritePre", {
 -- 		end, { buffer = true, silent = true, desc = "Compilar LaTeX con Tectonic nativo" })
 -- 	end,
 -- })
+
+-- Agregar mapeo a imagen en modo insercion en archivo markdown
+-- Equivale al mapeo en modo normal que esta en fzf-lua.
+vim.api.nvim_create_autocmd("FileType", {
+	pattern = "markdown",
+	callback = function(ev)
+		vim.keymap.set("i", "@@", function()
+			-- Borrar las dos @ recién insertadas
+			vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-h><C-h>", true, false, true), "n", false)
+			require("fzf-lua").files({
+				cwd = "~/uncuyo/1_Recursos/images",
+				prompt = "🖼️ Insertar imagen> ",
+				actions = {
+					["default"] = function(selected)
+						if not selected or not selected[1] then
+							return
+						end
+						local file = require("fzf-lua.path").entry_to_file(selected[1])
+						if not file then
+							return
+						end
+						local filename = file.path
+						local link = string.format("![%s](/1_Recursos/images/%s)", filename, filename)
+						vim.api.nvim_put({ link }, "", false, true)
+					end,
+				},
+			})
+		end, { buffer = ev.buf, noremap = true })
+	end,
+})

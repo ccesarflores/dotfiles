@@ -8,6 +8,12 @@ return {
 		render_modes = { "n", "c", "t", "v" },
 		-- Esto asegura que use los colores de tu tema
 		enabled = true,
+		completions = {
+			-- Desactiva el autocompletado de render-markdown vía blink
+			blink = { enabled = false },
+			-- Opcional pero recomendado: usa el LSP para sus propias sugerencias
+			lsp = { enabled = true },
+		},
 		latex = {
 			enabled = true,
 			-- Esto es clave: intenta usar estos convertidores si están en el sistema

@@ -83,6 +83,9 @@ return {
 					"emoji",
 					"sql",
 					"copilot",
+					"obsidian", -- Añadido
+					"obsidian_new", -- Añadido
+					"obsidian_tags", -- Añadido
 				},
 				providers = {
 					-- 2. Agregamos el provider de Copilot usando blink.compat
@@ -124,6 +127,18 @@ return {
 								vim.o.filetype
 							)
 						end,
+					},
+					obsidian = {
+						name = "obsidian",
+						module = "blink.compat.source",
+					},
+					obsidian_new = {
+						name = "obsidian_new",
+						module = "blink.compat.source",
+					},
+					obsidian_tags = {
+						name = "obsidian_tags",
+						module = "blink.compat.source",
 					},
 				},
 			},

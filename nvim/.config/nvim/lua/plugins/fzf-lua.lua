@@ -387,5 +387,31 @@ return {
 			end,
 			desc = "[F]ind en [V]ault [C]ódigo",
 		},
+		-- Dentro de tu configuración de fzf-lua, en la sección keys
+		{
+			"<leader>fp", -- O el atajo que prefieras
+			function()
+				require("fzf-lua").files({
+					cwd = "~/uncuyo/1_Recursos/images", -- Tu carpeta de imágenes
+					prompt = "🖼️ Insertar imagen> ",
+					actions = {
+						["default"] = function(selected)
+							if not selected or not selected[1] then
+								return
+							end
+							local file = require("fzf-lua.path").entry_to_file(selected[1])
+							if not file then
+								return
+							end
+							local filename = file.path
+							-- Opción A: Enlace Markdown estándar (para markdown-preview)
+							local link = string.format("![%s](/1_Recursos/images/%s)", filename, filename)
+							vim.api.nvim_put({ link }, "", false, true)
+						end,
+					},
+				})
+			end,
+			desc = "Insertar enlace de imagen",
+		},
 	},
 }
