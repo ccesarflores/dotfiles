@@ -4,11 +4,11 @@
 # Variables de entorno locales del script
 LOCAL_LOG="$HOME/.sync-log-local.txt"
 SYNCED_LOG="$HOME/uncuyo/.sync-log.txt"
-# En laptop exo:
-# REMOTE="UNCuyo:lcc"
-# En laptop hp:
-REMOTE="onedrive:lcc"
 LOCAL_DIR="$HOME/uncuyo/"
+# En laptop exo:
+REMOTE="UNCuyo:lcc"
+# En laptop hp:
+# REMOTE="onedrive:lcc"
 
 # Funciones internas de log
 log-local() {
@@ -78,7 +78,7 @@ case "$SUBCOMMAND" in
         if [[ "$*" == *"--dry-run"* ]] || [[ "$*" == *"-n"* ]]; then
             echo "<- Downloading from OneDrive... (Simulation)"
             rclone sync "$REMOTE" "$LOCAL_DIR" \
-                --track-renames --create-empty-src-dirs --fast-list -v --progress \
+                --track-renames --create-empty-src-dirs --fast-list -v --progress
                 --exclude "**/__pycache__/**" \
                 --exclude "**/*.pyc" \
                 "$@"
@@ -130,19 +130,11 @@ case "$SUBCOMMAND" in
         ;;
 
     status)
-        echo "=== STATUS UNCuyo ==="  && rclone check "$LOCAL_DIR" "$REMOTE" \
-            --track-renames --size-only --fast-list --retries 1 -q \
-            --exclude "**/__pycache__/**" \
-            --exclude "**/*.pyc" \
-            && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias (usa verify)"
+        echo "=== STATUS UNCuyo ==="  && rclone check $LOCAL_DIR $REMOTE --track-renames --size-only --fast-list --retries 1 -q && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias (usa verify)"
         ;;
 
     verify)
-        echo "=== VERIFY UNCuyo ===" && rclone check "$LOCAL_DIR" "$REMOTE" \
-            --track-renames --size-only --fast-list -v \
-            --exclude "**/__pycache__/**" \
-            --exclude "**/*.pyc" \
-            && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias"
+        echo "=== VERIFY UNCuyo ===" && rclone check $LOCAL_DIR $REMOTE --track-renames --size-only --fast-list -v && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias"
         ;;
 
     *)
