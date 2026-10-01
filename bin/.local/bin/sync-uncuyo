@@ -50,11 +50,19 @@ case "$SUBCOMMAND" in
         # echo "-> Uploading to OneDrive..."
         if [[ "$*" == *"--dry-run"* ]] || [[ "$*" == *"-n"* ]]; then
             echo "-> Uploading to OneDrive... (Simulation)"
-            rclone sync "$LOCAL_DIR" "$REMOTE" --track-renames --create-empty-src-dirs --fast-list -v --progress "$@"
+            rclone sync "$LOCAL_DIR" "$REMOTE" \
+                --track-renames --create-empty-src-dirs --fast-list -v --progress \
+                --exclude "**/__pycache__/**" \
+                --exclude "**/*.pyc" \
+                "$@"
             echo "🔍 Dry-run - Not logged"
         else
             echo "-> Uploading to OneDrive..."
-            if rclone sync "$LOCAL_DIR" "$REMOTE" --track-renames --create-empty-src-dirs --fast-list -v --progress "$@"; then
+            if rclone sync "$LOCAL_DIR" "$REMOTE" \
+                --track-renames --create-empty-src-dirs --fast-list -v --progress \
+                --exclude "**/__pycache__/**" \
+                --exclude "**/*.pyc" \
+                "$@"; then
                 log-local "UP"
                 log-synced "UP"
                 echo "[OK] Upload completed and logged"
@@ -69,11 +77,19 @@ case "$SUBCOMMAND" in
         # echo "▼ Downloading from OneDrive..."
         if [[ "$*" == *"--dry-run"* ]] || [[ "$*" == *"-n"* ]]; then
             echo "<- Downloading from OneDrive... (Simulation)"
-            rclone sync "$REMOTE" "$LOCAL_DIR" --track-renames --create-empty-src-dirs --fast-list -v --progress "$@"
+            rclone sync "$REMOTE" "$LOCAL_DIR" \
+                --track-renames --create-empty-src-dirs --fast-list -v --progress \
+                --exclude "**/__pycache__/**" \
+                --exclude "**/*.pyc" \
+                "$@"
             echo "🔍 Dry-run - Not logged"
         else
             echo "<- Downloading from OneDrive..."
-            if rclone sync "$REMOTE" "$LOCAL_DIR" --track-renames --create-empty-src-dirs --fast-list -v --progress "$@"; then
+            if rclone sync "$REMOTE" "$LOCAL_DIR" \
+                --track-renames --create-empty-src-dirs --fast-list -v --progress \
+                --exclude "**/__pycache__/**" \
+                --exclude "**/*.pyc" \
+                "$@"; then
                 log-local "DOWN"
                 echo "[OK] Download completed and logged locally"
             else
@@ -114,11 +130,19 @@ case "$SUBCOMMAND" in
         ;;
 
     status)
-        echo "=== STATUS UNCuyo ==="  && rclone check ~/uncuyo/ UNCuyo:lcc --track-renames --size-only --fast-list --retries 1 -q && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias (usa verify)"
+        echo "=== STATUS UNCuyo ==="  && rclone check "$LOCAL_DIR" "$REMOTE" \
+            --track-renames --size-only --fast-list --retries 1 -q \
+            --exclude "**/__pycache__/**" \
+            --exclude "**/*.pyc" \
+            && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias (usa verify)"
         ;;
 
     verify)
-        echo "=== VERIFY UNCuyo ===" && rclone check ~/uncuyo/ UNCuyo:lcc --track-renames --size-only --fast-list -v && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias"
+        echo "=== VERIFY UNCuyo ===" && rclone check "$LOCAL_DIR" "$REMOTE" \
+            --track-renames --size-only --fast-list -v \
+            --exclude "**/__pycache__/**" \
+            --exclude "**/*.pyc" \
+            && echo "[OK] Todo sincronizado" || echo "[WARNING] Hay diferencias"
         ;;
 
     *)
