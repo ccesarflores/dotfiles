@@ -19,13 +19,6 @@ return {
 			enabled = false,
 		},
 
-		-- Configuración de la integración con blink.cmp
-		completion = {
-			nvim_cmp = false, -- Desactiva nvim-cmp
-			blink = true, -- Activa blink.cmp
-			min_chars = 2, -- Caracteres mínimos para disparar la sugerencia
-		},
-
 		-- (Opcional) Configuración del picker para usar fzf-lua
 		picker = {
 			name = "fzf-lua",
