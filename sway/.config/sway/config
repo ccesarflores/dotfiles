@@ -39,6 +39,7 @@ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1920x1080.png fill
 #
 # Example configuration:
 #
+exec sway-audio-idle-inhibit
 exec swayidle -w \
     timeout 270 'brightnessctl -s && for i in {1..80}; do brightnessctl set 1.25%-; sleep 0.025; done' \
     resume 'brightnessctl -r' \
