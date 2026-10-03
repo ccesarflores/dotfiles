@@ -115,6 +115,16 @@ return {
 			default_tags = { "daily" },
 			template = "daily", -- Plantilla opcional para notas diarias
 		},
+		-- En tu obsidian.lua, dentro de opts = { ... }
+		follow_url_func = function(url)
+			-- Si es una URL de YouTube, la abrimos con mpv
+			if url:match("youtube%.com") or url:match("youtu%.be") then
+				vim.fn.jobstart({ "mpv", url }, { detach = true })
+			else
+				-- Para cualquier otra URL, usamos qutebrowser
+				vim.fn.jobstart({ "qutebrowser", url }, { detach = true })
+			end
+		end,
 	},
 
 	-- Fuera de opts = { ... },
