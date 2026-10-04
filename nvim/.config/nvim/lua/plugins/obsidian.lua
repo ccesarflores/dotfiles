@@ -28,24 +28,9 @@ return {
 			},
 		},
 
-		-- (Opcional) Mapeos útiles dentro de las notas
-		mappings = {
-			["<cr>"] = {
-				action = function()
-					return require("obsidian").util.smart_action()
-				end,
-				opts = { buffer = true, expr = true },
-			},
-			["gd"] = {
-				action = function()
-					return require("obsidian").util.gf_passthrough()
-				end,
-				opts = { noremap = false, expr = true, buffer = true },
-			},
-		},
 		attachments = {
 			-- Ruta absoluta a tu carpeta de imágenes existente
-			img_folder = "1_Recursos/images",
+			folder = "1_Recursos/images",
 
 			-- Funcion para normalizar el nombre
 			img_name_func = function()
