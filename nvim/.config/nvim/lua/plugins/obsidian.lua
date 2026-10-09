@@ -16,7 +16,7 @@ return {
 
 		-- ¡Importante! Desactiva la UI para evitar conflictos con render-markdown
 		ui = {
-			enabled = false,
+			enable = false,
 		},
 
 		-- (Opcional) Configuración del picker para usar fzf-lua
@@ -66,9 +66,9 @@ return {
 		},
 		-- Dentro de opts = { ... }
 		templates = {
-			folder = "templates", -- Relativo a la raíz del vault
-			date_format = "%Y-%m-%d",
-			time_format = "%H:%M",
+			folder = "7_Templates", -- Relativo a la raíz del vault
+			date_format = "YYYY-MM-DD", -- formato Obsidian (moment.js)
+			time_format = "HH:mm", -- formato Obsidian
 		},
 		frontmatter = {
 			-- Orden de las claves en el YAML
@@ -80,6 +80,7 @@ return {
 					title = note.title,
 					aliases = note.aliases,
 					tags = note.tags,
+					-- ⚠️ os.date usa strftime, NO moment.js
 					updated = os.date("%Y-%m-%d %H:%M"),
 				}
 				if note.metadata ~= nil and not vim.tbl_isempty(note.metadata) then
@@ -92,24 +93,13 @@ return {
 				return out
 			end,
 		},
-		-- Dentro de opts = { ... }
 		daily_notes = {
-			folder = "0_Inbox/Daily", -- O donde prefieras
-			date_format = "%Y-%m-%d",
-			alias_format = "%B %-d, %Y",
+			folder = "0_Inbox/Daily",
+			date_format = "YYYY-MM-DD", -- formato Obsidian
+			alias_format = "MMMM D, YYYY", -- formato Obsidian
 			default_tags = { "daily" },
-			template = "daily", -- Plantilla opcional para notas diarias
+			template = "daily",
 		},
-		-- En tu obsidian.lua, dentro de opts = { ... }
-		follow_url_func = function(url)
-			-- Si es una URL de YouTube, la abrimos con mpv
-			if url:match("youtube%.com") or url:match("youtu%.be") then
-				vim.fn.jobstart({ "mpv", url }, { detach = true })
-			else
-				-- Para cualquier otra URL, usamos qutebrowser
-				vim.fn.jobstart({ "qutebrowser", url }, { detach = true })
-			end
-		end,
 	},
 
 	-- Fuera de opts = { ... },
