@@ -7,6 +7,7 @@ return {
 		"nvim-lua/plenary.nvim",
 	},
 	opts = {
+		legacy_commands = false, -- Desactiva los comandos antiguos y la advertencia
 		workspaces = {
 			{
 				name = "uncuyo",
@@ -133,28 +134,28 @@ return {
 			desc = "Vault Root (Oil)",
 		},
 		-- Ir a notas diarias
-		{ "<leader>od", "<cmd>ObsidianToday<cr>", desc = "Obsidian: Nota de hoy" },
+		{ "<leader>od", "<cmd>Obsidian today<cr>", desc = "Obsidian: Nota de hoy" },
 		-- Dentro de la tabla keys = { ... }
 		-- Crear nota desde plantilla (versión simplificada, sin preguntar tipo)
-		{ "<leader>oN", "<cmd>ObsidianNewFromTemplate<cr>", desc = "Obsidian: Nueva desde plantilla" },
+		{ "<leader>oN", "<cmd>Obsidian new_from_template<cr>", desc = "Obsidian: Nueva desde plantilla" },
 		-- Buscar en el vault
-		{ "<leader>os", "<cmd>ObsidianSearch<cr>", desc = "Obsidian: Buscar en vault" },
+		{ "<leader>os", "<cmd>Obsidian search<cr>", desc = "Obsidian: Buscar en vault" },
 		-- Quick switch (cambio rápido de nota)
-		{ "<leader>oo", "<cmd>ObsidianQuickSwitch<cr>", desc = "Obsidian: Quick switch" },
+		{ "<leader>oo", "<cmd>Obsidian quick_switch<cr>", desc = "Obsidian: Quick switch" },
 		-- Backlinks (notas que te enlazan)
-		{ "<leader>ob", "<cmd>ObsidianBacklinks<cr>", desc = "Obsidian: Backlinks" },
+		{ "<leader>ob", "<cmd>Obsidian backlinks<cr>", desc = "Obsidian: Backlinks" },
 		-- Enlaces salientes
-		{ "<leader>ol", "<cmd>ObsidianLinks<cr>", desc = "Obsidian: Enlaces salientes" },
+		{ "<leader>ol", "<cmd>Obsidian links<cr>", desc = "Obsidian: Enlaces salientes" },
 		-- Renombrar nota (actualiza enlaces)
-		{ "<leader>or", "<cmd>ObsidianRename<cr>", desc = "Obsidian: Renombrar" },
+		{ "<leader>or", "<cmd>Obsidian rename<cr>", desc = "Obsidian: Renombrar" },
 		-- Extraer selección a nota nueva (modo visual)
-		{ "<leader>oe", ":ObsidianExtractNote<cr>", desc = "Obsidian: Extraer nota", mode = "v" },
+		{ "<leader>oe", ":Obsidian extract_note<cr>", desc = "Obsidian: Extraer nota", mode = "v" },
 		-- Tabla de contenidos
-		{ "<leader>ot", "<cmd>ObsidianTOC<cr>", desc = "Obsidian: TOC" },
+		{ "<leader>ot", "<cmd>Obsidian toc<cr>", desc = "Obsidian: TOC" },
 		-- Toggle checkbox
-		{ "<leader>ox", "<cmd>ObsidianToggleCheckbox<cr>", desc = "Obsidian: Toggle checkbox" },
+		{ "<leader>ox", "<cmd>Obsidian toggle_checkbox<cr>", desc = "Obsidian: Toggle checkbox" },
 		-- Buscar por tags
-		{ "<leader>o#", "<cmd>ObsidianTags<cr>", desc = "Obsidian: Buscar por tag" },
+		{ "<leader>o#", "<cmd>Obsidian tags<cr>", desc = "Obsidian: Buscar por tag" },
 		-- Añadir archivos adjuntos mediante un selector de archivos. Esto te permite insertar imágenes sin necesidad de pegarlas desde el portapapeles
 		{
 			"<leader>oA",
