@@ -34,9 +34,9 @@ require("lazy").setup({
 		{ import = "plugins" }, -- carga todos los archivos en lua/plugins/
 	},
 
-	--[[defaults = {
-    lazy = true,                   -- si esta en true, todos los plugins se cargan de forma diferida por defecto
-  },]]
+	defaults = {
+		lazy = true, -- si esta en true, todos los plugins se cargan de forma diferida por defecto
+	},
 
 	install = {
 		colorscheme = { "tokyonight" },
