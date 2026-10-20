@@ -4,6 +4,7 @@ return {
 	dependencies = { "nvim-treesitter/nvim-treesitter", "echasnovski/mini.icons" }, -- if you use standalone mini plugins
 	---@module 'render-markdown'
 	---@type render.md.UserConfig
+	lazy = false,
 	opts = {
 		render_modes = { "n", "c", "t", "v" },
 		-- Esto asegura que use los colores de tu tema
