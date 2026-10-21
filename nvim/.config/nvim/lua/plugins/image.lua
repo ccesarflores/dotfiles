@@ -1,6 +1,8 @@
 -- ~/.config/nvim/lua/plugins/image.lua
 return {
 	"3rd/image.nvim",
+	lazy = true,
+	cmd = { "ImageEnable", "ImageDisable" },
 	build = false,
 	opts = {
 		backend = "sixel",
@@ -21,4 +23,15 @@ return {
 		window_overlap_clear_enabled = true,
 		window_overlap_clear_ft_ignore = { "cmp_menu", "cmp_docs", "" },
 	},
+	config = function(_, opts)
+		require("image").setup(opts)
+
+		vim.api.nvim_create_user_command("ImageEnable", function()
+			require("image").enable()
+		end, {})
+
+		vim.api.nvim_create_user_command("ImageDisable", function()
+			require("image").disable()
+		end, {})
+	end,
 }
