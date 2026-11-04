@@ -1,4 +1,4 @@
-# =================== VARIABLES DE ENTORNO ====================
+# ==================== ENTORNO Y PATH ==================== If you come from bash you might have to change your $PATH. export PATH=$HOME/bin:$HOME/.local/bin:/usr/local/bin:$PATH Agrega tus binarios locales y de NPM al inicio del PATH de forma segura
 export PATH="$HOME/.local/bin:$HOME/.npm-global/bin:$PATH"
 export STARDICT_DATA_DIR="$HOME/.local/share/stardict"
 export EDITOR=nvim
@@ -59,7 +59,9 @@ unsetopt menu_complete
 # Configuración del sistema de completado
 zstyle ':completion:*' matcher-list 'm:{a-zA-Z}={A-Za-z}' 'r:|=*' 'l:|=* r:|=*'
 zstyle ':completion:*' menu select=1
-zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}" 'ma=48;5;39;38;5;15;1'  # Colores: fondo turquesa/cian (39 es cyan medio) + texto blanco bold
+zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}" 'ma=48;5;39;38;5;0;1'  # Letra oscura sobre fondo turquesa /cian
+# zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}" 'ma=48;5;39;38;5;15;1'  # Colores: fondo turquesa/cian (39 es cyan medio) + texto blanco bold
+# zstyle ':completion:*:default' list-colors "${(s.:.)LS_COLORS}" 'ma=48;5;236;38;5;15;1'  # Fondo gris oscuro/negro y letra blanca
 # Grupos sin títulos raros
 zstyle ':completion:*' group-name ''
 
@@ -68,6 +70,7 @@ bindkey '^I' expand-or-complete             # Primer Tab: completa común. Segun
 bindkey '^[[Z' reverse-menu-complete       # Shift-Tab: retrocede
 bindkey -M menuselect ' ' accept-line-and-down-history   # Space: acepta + baja en historia (pero sin ejecutar inmediatamente)
 bindkey -M menuselect '^M' accept-line                   # Enter: acepta y ejecuta (si ya completó)
+bindkey '^R' history-incremental-search-backward     # incluso estando en modo vi, cuando pulses Ctrl + R ejecute la búsqueda incremental en el historial
 
 # ============─── plugins ───==================
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
@@ -111,6 +114,33 @@ alias swap-check='~/.local/bin/check-swap.sh'
 # muestra info de estado de bateria
 alias battery='upower -i /org/freedesktop/UPower/devices/DisplayDevice'
 
+# ============ Configuracion basica para nnn =================
+
+#export NNN_TERMINAL="foot"          # Fuerza que use foot para cualquier cosa que necesite un terminal nuevo
+
+# nnn basics
+#export NNN_FIFO="/tmp/nnn.fifo"      # necesario para previews
+#export NNN_PLUG='p:preview-tui;z:fzcd;f:fzfopen;j:autojump;v:imgview;d:dragdrop;t:treeview;'
+#export NNN_BMS='d:~/Downloads;D:~/Documentos;c:~/.config;p:~/Proyectos'  # bookmarks (presiona b para ver)
+
+# Colores bonitos + icons (con Nerd Font)
+#export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
+#export NNN_ICONLOOKUP=1  # si compilaste nnn con icons, o usa plugin
+
+#alias n="nnn -de"  # -d: no-cd on quit (útil a veces), -e: text en $EDITOR
+
+# export NNN_USE_EDITOR=1  # opcional, pero ponlo en 1 si quieres forzar CLI para texto
+
+# Usa rifle como opener en nnn (recomendado, reutiliza tu config de ranger). Asegúrate de tener rifle instalado (viene con ranger, así que ya lo tienes).
+
+# Corrige NNN_OPTS: combina las flags que sí quieres
+export NNN_OPTS="ac"   # 'a' = auto-cd al salir, 'c' = CLI-only opener (útil si quieres evitar algunos GUI fallbacks)
+# ¡Esto es lo que activa rifle como opener principal! 
+export NNN_OPENER="rifle"
+# Opcional pero recomendado: reutiliza el rifle.conf de ranger
+export NNN_RIFLE_CONF="$HOME/.config/ranger/rifle.conf"
+#alias n="nnn -de"  # descomenta si quieres alias con -d -e
+
 # ==================== FUNCIONES INTERACTIVAS RÁPIDAS ====================
 # Captura un color y muestra su codigo hexadecimal en la terminal
 pickcolor() {
@@ -119,45 +149,8 @@ pickcolor() {
     echo "$color" | wl-copy # Esto lo copia al portapapeles automáticamente
 }
 
-# Diccionario limpio: sin tags HTML, ancho del terminal, fuerza stdin
-# Primero borramos el alias viejo para evitar conflictos
-unalias def 2>/dev/null
-
-enes() {
-    [[ $# -eq 0 ]] && { echo "Uso: def <palabra>"; return 1 }
-
-    local palabra="$1"
-    local columnas=$(tput cols)
-
-    {
-        # --- Diccionario 1: English-Español (Con formato color y limpieza HTML) ---
-        echo -e "\e[1;33m--- Traducción (EN-ES) ---\e[0m"
-        sdcv -n -c --utf8-output -u "English-español FreeDict+WikDict dictionary (en-es)" "$palabra" | \
-            html2text -b "$columnas" --ignore-links --ignore-images --unicode-snob | \
-            sed "s/-->/\x1b[1;36m&/g; s/$/\x1b[0m/"
-        
-        echo -e "\n" # Espaciador
-
-        # --- Diccionario 2: Longman (Salida cruda o personalizada) ---
-        echo -e "\e[1;32m--- Pronunciación (Longman) ---\e[0m"
-        # Aquí puedes añadir un sed o un awk específico para Longman si lo deseas
-        sdcv -n -c -u "Longman Pronunciation Dictionary 3rd Ed. (En-En)" "$palabra"
-
-        # --- Diccionario 3: (Opcional) Ejemplo de un tercer formato ---
-        # echo -e "\n\e[1;35m--- Definición Rápida ---\e[0m"
-        # sdcv -n -u "Otro Diccionario" "$palabra" | head -n 10
-    } | less -F -X -R
-}
-
-esen() {
-  [[ $# -eq 0 ]] && { echo "Uso: trad <palabra>"; return 1 }
-
-  # Aquí pones el nombre de tu diccionario ES-EN
-  sdcv -n -c --utf8-output -u "Spanish-English FreeDict Dictionary (es-en)" "$@" | \
-    html2text -b $(tput cols) --unicode-snob | \
-    sed "s/-->/\x1b[1;36m&/g; s/$/\x1b[0m/" | \
-    less -F -X -R
-}
+# ==================== SECRETOS / API KEYS ====================
+[[ -f ~/.zsh_secrets ]] && source ~/.zsh_secrets
 
 # YouTube bookmarks (versión corregida)
 YT_BOOKMARKS="$HOME/.local/share/youtube/bookmarks.txt"
@@ -259,33 +252,4 @@ preexec() {
 #  print -Pn "\e]0;RUN: $cmd | %1~\a"
 #}
 
-# ============ Configuracion basica para nnn =================
-
-#export NNN_TERMINAL="foot"          # Fuerza que use foot para cualquier cosa que necesite un terminal nuevo
-
-# nnn basics
-#export NNN_FIFO="/tmp/nnn.fifo"      # necesario para previews
-#export NNN_PLUG='p:preview-tui;z:fzcd;f:fzfopen;j:autojump;v:imgview;d:dragdrop;t:treeview;'
-#export NNN_BMS='d:~/Downloads;D:~/Documentos;c:~/.config;p:~/Proyectos'  # bookmarks (presiona b para ver)
-
-# Colores bonitos + icons (con Nerd Font)
-#export NNN_FCOLORS='c1e2272e006033f7c6d6abc4'
-#export NNN_ICONLOOKUP=1  # si compilaste nnn con icons, o usa plugin
-
-#alias n="nnn -de"  # -d: no-cd on quit (útil a veces), -e: text en $EDITOR
-
-# export NNN_USE_EDITOR=1  # opcional, pero ponlo en 1 si quieres forzar CLI para texto
-
-# Usa rifle como opener en nnn (recomendado, reutiliza tu config de ranger). Asegúrate de tener rifle instalado (viene con ranger, así que ya lo tienes).
-
-# Corrige NNN_OPTS: combina las flags que sí quieres
-export NNN_OPTS="ac"   # 'a' = auto-cd al salir, 'c' = CLI-only opener (útil si quieres evitar algunos GUI fallbacks)
-# ¡Esto es lo que activa rifle como opener principal! 
-export NNN_OPENER="rifle"
-# Opcional pero recomendado: reutiliza el rifle.conf de ranger
-export NNN_RIFLE_CONF="$HOME/.config/ranger/rifle.conf"
-#alias n="nnn -de"  # descomenta si quieres alias con -d -e
-
-# ==================== SECRETOS / API KEYS ====================
-[[ -f ~/.zsh_secrets ]] && source ~/.zsh_secrets
 
