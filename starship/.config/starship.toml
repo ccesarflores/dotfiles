@@ -1,6 +1,7 @@
 
 format = """
 [](fg:#282828 bg:#282828)\
+$python\
 $character\
 $battery$username$hostname$shell\
 $directory\
@@ -256,6 +257,11 @@ format = """\
 [ $symbol ($version) ]($style)\
 [](fg:#dea584)\
 """
+
+[python]
+# Muestra el nombre del virtualenv entre paréntesis
+format = '([$virtualenv]($style) )'
+style = 'bold yellow'
 
 [cmd_duration]
 min_time = 2000
