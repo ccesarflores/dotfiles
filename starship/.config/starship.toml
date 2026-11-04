@@ -1,0 +1,278 @@
+
+format = """
+[](fg:#282828 bg:#282828)\
+$character\
+$battery$username$hostname$shell\
+$directory\
+$git_branch\
+$git_status\
+$c\
+$elixir\
+$elm\
+$golang\
+$haskell\
+$java\
+$julia\
+$nim\
+$rust\
+[ ](fg bg)\
+"""
+#[](fg:#303846 bg:#303846)\
+
+# Disable the blank line at the start of the prompt
+add_newline = false
+
+[os]
+style = "bg:#5E5C64 fg:#F6F5F4 bold"
+format = "[$symbol]($style)"
+disabled = false
+
+[os.symbols]
+Alpaquita = " "
+Alpine = " "
+AlmaLinux = " "
+Amazon = " "
+Android = " "
+Arch = " "
+Artix = " "
+CachyOS = " "
+CentOS = " "
+Debian = " "
+DragonFly = " "
+Emscripten = " "
+EndeavourOS = " "
+Fedora = " "
+FreeBSD = " "
+Garuda = "󰛓 "
+Gentoo = " "
+HardenedBSD = "󰞌 "
+Illumos = "󰈸 "
+Kali = " "
+Linux = " "
+Mabox = " "
+Macos = " "
+Manjaro = " "
+Mariner = " "
+MidnightBSD = " "
+Mint = " "
+NetBSD = " "
+NixOS = " "
+Nobara = " "
+OpenBSD = "󰈺 "
+openSUSE = " "
+OracleLinux = "󰌷 "
+Pop = " "
+Raspbian = " "
+Redhat = " "
+RedHatEnterprise = " "
+RockyLinux = " "
+Redox = "󰀘 "
+Solus = "󰠳 "
+SUSE = " "
+Ubuntu = " "
+Unknown = " "
+Void = " "
+Windows = "󰍲 "
+
+[shell]
+style = "bg:#5E5C64 fg:#F6F5F4 bold"
+format = "[$indicator]($style)"
+disabled = false
+fish_indicator = ' 󰈺'
+powershell_indicator = ' '
+bash_indicator = ''
+zsh_indicator = ''
+
+[battery]
+format = '[$symbol$percentage ]($style)'
+
+# Símbolos base (por si no hay display específico)
+full_symbol = '󰁹 '       # lleno (verde o blanco)
+charging_symbol = '󰂄 '    # cargando (rayo)
+discharging_symbol = '󰂃 ' # descargando (por defecto)
+empty_symbol = '󰂎 '       # vacío (rojo o alerta)
+
+# Solo aparece si batería ≤ 20% (ajusta thresholds a tu gusto)
+[[battery.display]]
+threshold = 20
+#style = 'bg:#fab387 fg:#000000 bold'   # naranja suave + negro (advertencia media)
+style = 'bg:#1E1B1A fg:#fab387 bold'   # naranja suave + negro (advertencia media)
+discharging_symbol = '󰁻 '             # icono medio-bajo
+
+[[battery.display]]
+threshold = 15
+# style = 'bg:#5E5C64 fg:#FFFFFF bold blink'   # rojo rosado + blanco
+style = 'bg:#1E1B1A fg:#FFFFFF bold blink'   # letra blanca + fondo oscuro 
+discharging_symbol = '󰁺 '             # icono bajo
+
+[[battery.display]]
+threshold = 10
+style = 'bg:#1E1B1A fg:#FFFFFF bold blink'  # rojo + PARPADEO (blink)
+discharging_symbol = '󰂎 '             # icono vacío/crítica (o usa '󰂍 ' si querés más alerta)
+#format = '[$symbol$percentage ]($style)[](fg:#f38ba8 bg:#5E5C64 blink)'
+# You can also replace your username with a neat symbol like  to save some space
+
+# Opcional: si está cargando en bajo, usa otro símbolo
+charging_symbol = '󰂅 '  # rayo con carga (puedes definir por display si querés)
+
+[username]
+show_always = true
+style_user = "bg:#282828 fg:#F6F5F4"
+style_root = "bg:#282828 fg:#A51D2D"
+format = '[$user]($style)'
+
+[hostname]
+style = "bg:#282828 fg:#F6F5F4"
+format = '[@$hostname ]($style)[](fg:#1E1B1A bg:#131B1A)'
+ssh_only = false 
+disabled = false
+
+[directory]
+style = "bg:#458588 fg:#282828"
+#style = "bg:#458588 fg:#000000"
+#style = "bg:#0097A7 fg:#FFFFFF bold"
+truncation_length = 3                  # muestra las últimas 3 carpetas
+truncation_symbol = "…/"               # …/ para indicar truncado
+# fish_style_pwd_dir_length = 1        # En el path verás algo como: U / c / m / u / t (iniciales + /)
+truncate_to_repo = true                # si estás en git, trunca desde la raíz del repo
+#home_symbol = " "                     # ~ → ícono de casa
+read_only = " "                       # carpeta read-only
+
+# formato gruvbox 
+format = """\
+[](fg:#282828 bg:#458588)\
+[ $path ]($style)\
+[](fg:#458588)\
+"""
+
+#format = """\
+#[](fg:#5E5C64 bg:#0097A7)\
+#[ $path ]($style)\
+#[](fg:#0097A7)\
+#"""
+
+# C
+[c]
+symbol = " "
+style = "bg:#6591c9 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#6591c9)\
+[ $symbol ($version) ]($style)\
+[](fg:#6591c9)\
+"""
+
+# Elixir
+[elixir]
+symbol = " "
+style = "bg:#a56ef3 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#a56ef3)\
+[ $symbol ($version) ]($style)\
+[](fg:#a56ef3)\
+"""
+
+# Elm
+[elm]
+symbol = " "
+style = "bg:#60b5cc fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#60b5cc)\
+[ $symbol ($version) ]($style)\
+[](fg:#60b5cc)\
+"""
+
+[git_branch]
+symbol = " "
+# Este es el color cuando la rama está limpia y actualizada (verde)
+style = "bg:#8ec07c fg:#282828 bold"
+format = """\
+[](fg:#303846 bg:#8ec07c)\
+[ $symbol $branch ]($style)\
+"""
+
+[git_status]
+style = "bg:#8ec07c fg:#282828 bold"
+format = """\
+[ $all_status$ahead_behind ]($style)\
+[](fg:#8ec07c)\
+"""
+
+# Golang
+[golang]
+symbol = " "
+style = "bg:#00add8 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#00add8)\
+[ $symbol ($version) ]($style)\
+[](fg:#00add8)\
+"""
+
+# Haskell
+[haskell]
+symbol = " "
+style = "bg:#5e5086 fg:#ffffff bold"
+format = """\
+[](fg:#303846 bg:#5e5086)\
+[ $symbol ($version) ]($style)\
+[](fg:#5e5086)\
+"""
+
+# Java
+[java]
+symbol = " "
+style = "bg:#f89820 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#f89820)\
+[ $symbol ($version) ]($style)\
+[](fg:#f89820)\
+"""
+
+# Julia
+[julia]
+symbol = " "
+style = "bg:#6a9a9a fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#6a9a9a)\
+[ $symbol ($version) ]($style)\
+[](fg:#6a9a9a)\
+"""
+
+# Nim
+[nim]
+symbol = " "
+style = "bg:#f7d070 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#f7d070)\
+[ $symbol ($version) ]($style)\
+[](fg:#f7d070)\
+"""
+
+# Rust
+[rust]
+symbol = ""
+style = "bg:#dea584 fg:#000000 bold"
+format = """\
+[](fg:#303846 bg:#dea584)\
+[ $symbol ($version) ]($style)\
+[](fg:#dea584)\
+"""
+
+[cmd_duration]
+min_time = 2000
+format = " took [$duration]($style)"
+
+[time]
+disabled = false
+time_format = "%R" # Hour:Minute Format
+style = "bg:#F6F5F4 fg:#3D3846 bold"
+# format = '[ ♥ $time ]($style)'
+format = '[$time ]($style)'
+
+[character]
+disabled = false
+success_symbol = "[](bg:#1E1B1A fg:#1E1B1A)"
+error_symbol = "[❌](bg:#282828 fg:#E66100)"
+#error_symbol = "[× ](bg:#282828 fg:#E66100)"
+# format = '[ ♥ $time ]($style)'
+format = "$symbol"
+
