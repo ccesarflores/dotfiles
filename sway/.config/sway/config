@@ -272,6 +272,12 @@ bindsym $mod+m mode "mouse"
     # Capturar área seleccionada (Mod+Ctrl+n) y guarda en images
     bindsym $mod+Control+n exec grim -g "$(slurp)" /home/$USER/uncuyo/1_Recursos/images/$(date +%Y-%m-%d_%H-%m-%s).png
 
+# Grabar/detener pantalla completa con wl-screenrec
+bindsym $mod+Shift+r exec 'pkill -SIGINT wl-screenrec || wl-screenrec -f ~/Videos/grabacion_$(date +%Y%m%d_%H%M%S).mp4'
+
+# Grabar/detener una región con slurp
+bindsym $mod+Shift+Ctrl+r exec 'pkill -SIGINT wl-screenrec || wl-screenrec -g "$(slurp)" -f ~/Videos/region_$(date +%Y%m%d_%H%M%S).mp4'
+
 # Opción recomendada (con wofi) permite elegir nombre
 bindsym $mod+Control+m exec bash -c 'tag=$(echo "" | wmenu -p "Etiqueta:" | tr "[:upper:]" "[:lower:]" | tr " " "-"); filename=$(date +%Y-%m-%d_%H-%M-%S)${tag:+_${tag}}.png; grim -g "$(slurp)" "/home/$USER/uncuyo/1_Recursos/images/$filename"'
 

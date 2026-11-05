@@ -1,0 +1,22 @@
+#!/usr/bin/env zsh
+# ~/.local/bin/grabar-pantalla
+# Graba la pantalla en Sway con wl-screenrec (VAAPI, bajo consumo de CPU).
+
+set -euo pipefail
+
+DIR_SALIDA="${XDG_VIDEOS_DIR:-$HOME/Videos}"
+mkdir -p "$DIR_SALIDA"
+ARCHIVO="$DIR_SALIDA/grabacion_$(date +%Y%m%d_%H%M%S).mp4"
+
+if [[ "${1:-}" == "--region" ]]; then
+  if ! command -v slurp >/dev/null 2>&1; then
+    echo "Error: 'slurp' no está instalado. Instálalo con: sudo pacman -S slurp" >&2
+    exit 1
+  fi
+  echo "Selecciona la región a grabar..."
+  wl-screenrec -g "$(slurp)" -f "$ARCHIVO"
+else
+  echo "Grabando pantalla completa... Pulsa Ctrl+C para detener."
+  echo "Archivo: $ARCHIVO"
+  wl-screenrec -f "$ARCHIVO"
+fi
