@@ -59,6 +59,9 @@ M.run_code = function()
 		-- para finalizar consulta escribe `halt.`
 		-- Si editás tu código arriba en Neovim y agregás nuevos hechos, no hace falta que cierres la terminal abajo. Podés pararte en la consola interactiva de Prolog y escribir: `make.`
 		cmd = string.format("swipl -s '%s'", filename)
+	elseif filetype == "html" then
+		cmd = "qutebrowser " .. vim.fn.shellescape(filename)
+		-- cmd = "xdg-open " .. vim.fn.shellescape(filename)
 	else
 		print("Lenguaje no configurado para ejecución automática.")
 		return
