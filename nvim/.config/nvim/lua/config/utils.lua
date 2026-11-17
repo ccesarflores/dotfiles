@@ -1,5 +1,8 @@
 -- ~/.config/nvim/lua/config/utils.lua
 -- Funciones de utilidad (NO dependen de plugins)
+
+math.randomseed(os.time())
+
 local M = {}
 
 -- Función auxiliar para buscar el ejecutable de python subiendo por el árbol de directorios
@@ -156,6 +159,17 @@ function M.pandoc_pdf_preview()
 	})
 end
 
+local function generar_sufijo()
+	local letras = {}
+
+	for i = 1, 4 do
+		letras[i] = string.char(math.random(65, 90)) -- A-Z
+	end
+
+	return table.concat(letras)
+end
+
+-- Crea la nota en ./6_Zettelkasten/<año>/
 function M.new_zettel_note()
 	local title = vim.fn.input("Título de la nota: ")
 	if title == "" then
@@ -163,17 +177,17 @@ function M.new_zettel_note()
 		return
 	end
 
-	local date = os.date("%Y%m%d%H%M")
 	local year = os.date("%Y")
-	local slug = title:gsub("%s+", "-"):lower()
-	local filename = string.format("./6_Zettelkasten/%s/%s-%s.md", year, date, slug)
+	local carpeta = "./6_Zettelkasten/" .. year
+	local timestamp = tostring(os.time())
+	local id
+	local filename
 
-	if vim.uv.fs_stat(filename) then
-		print("\n⚠️ ¡Error! Ya existe una nota con ese título")
-		return
-	end
+	repeat
+		id = timestamp .. "-" .. generar_sufijo()
+		filename = string.format("%s/%s.md", carpeta, id)
+	until not vim.uv.fs_stat(filename)
 
-	-- USANDO [=[ ]=] PARA EVITAR PROBLEMAS CON [[ ]]
 	local template = string.format(
 		[=[
 ---
@@ -203,17 +217,18 @@ type: permanente
 ## Reflexión
 > ¿Por qué es importante esta idea?
 ]=],
-		date,
+		id,
 		title,
 		os.date("%Y-%m-%d"),
 		title
 	)
 
-	vim.cmd("edit " .. filename)
+	vim.cmd("edit " .. vim.fn.fnameescape(filename))
 	vim.api.nvim_buf_set_lines(0, 0, -1, false, vim.split(template, "\n"))
 	vim.cmd("normal /## Contenido\rj")
 end
 
+-- crea la nota en ./1_Recursos/
 function M.new_zettel_note_2()
 	local title = vim.fn.input("Título de la nota: ")
 	if title == "" then
