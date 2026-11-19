@@ -15,6 +15,49 @@ return {
 			},
 		},
 
+		callbacks = {
+			enter_note = function()
+				vim.keymap.set("n", "<CR>", function()
+					local line = vim.api.nvim_get_current_line()
+					local target = line:match("%]%((.-)%)")
+
+					if target then
+						target = target:gsub('^"(.*)"$', "%1") -- quita comillas si las hay
+						local ext = target:match("%.([^./?#]+)")
+						ext = ext and ext:lower()
+
+						local office = {
+							odt = true,
+							doc = true,
+							docx = true,
+							ods = true,
+							xls = true,
+							xlsx = true,
+							odp = true,
+							ppt = true,
+							pptx = true,
+							tex = true,
+						}
+
+						if office[ext] then
+							target = target:gsub("%%20", " ")
+							local path = vim.fs.normalize(vim.fs.joinpath(vim.fn.expand("%:p:h"), target))
+
+							if ext == "tex" then -- si es tex, que lo abra en la misma ventana
+								vim.api.nvim_cmd({ cmd = "edit", args = { path } }, {})
+							else
+								vim.ui.open(path)
+							end
+
+							return
+						end
+					end
+
+					vim.cmd("Obsidian follow_link")
+					return
+				end, { buffer = true, silent = true, desc = "Abrir enlace o archivo" })
+			end,
+		},
 		-- ¡Importante! Desactiva la UI para evitar conflictos con render-markdown
 		ui = {
 			enable = false,
